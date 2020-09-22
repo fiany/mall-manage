@@ -14,7 +14,6 @@ import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:7000'
 axios.interceptors.request.use(config => {
   // 请求拦截器
-  console.log(config)
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })

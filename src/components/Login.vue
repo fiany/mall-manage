@@ -51,7 +51,6 @@ export default {
   methods: {
     // 重置表单数据
     restLoginForm () {
-      console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
     login () {
