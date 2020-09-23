@@ -30,6 +30,22 @@
         <el-table-column prop="sale" label="商品销量"></el-table-column>
         <el-table-column prop="stock" label="商品库存"></el-table-column>
         <el-table-column prop="productDetail" label="商品详情"></el-table-column>
+        <el-table-column label="商品状态">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.status"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            {{ scope.row }}
+            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog()"></el-button>
+            <el-button type="danger" icon="el-icon-delete"></el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <!-- 分页区域-->
       <el-pagination
@@ -47,15 +63,34 @@
     <el-dialog
       title="添加商品"
       :visible.sync="addDialogVisible"
-      width="80%">
-      <el-form :model="addProductForm" :rules="addProductFormRules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      width="80%"
+      @close="addDialogVisibleClose()">
+      <el-form :model="addProductForm" :rules="addProductFormRules" ref="addProductFormRef" label-width="100px"
+               class="demo-ruleForm">
         <el-form-item label="商品名称" prop="productName">
           <el-input v-model="addProductForm.productName"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
       <el-button @click="addDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="addProduct">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 修改商品对话框-->
+    <el-dialog
+      title="修改商品"
+      :visible.sync="editDialogVisible"
+      width="80%"
+      @close="editDialogVisibleClose()">
+      <el-form :model="addProductForm" :rules="addProductFormRules" ref="editProductFormRef" label-width="100px"
+               class="demo-ruleForm">
+        <el-form-item label="商品名称" prop="productName">
+          <el-input v-model="addProductForm.productName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="editDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="editProduct">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -75,6 +110,7 @@ export default {
       totalNum: 0,
       totalPage: 0,
       addDialogVisible: false,
+      editDialogVisible: false,
       addProductForm: {},
       addProductFormRules: {
         // 验证商品名称
@@ -104,7 +140,27 @@ export default {
     handleSizeChange(newSize) {
       this.queryInfo.pageSize = newSize
       this.getProductList()
+    },
+    showEditDialog() {
+      this.editDialogVisible = true
+    },
+    // 添加商品
+    addProduct() {
+      this.addDialogVisible = false
+    },
+    // 编辑商品
+    editProduct() {
+      this.editDialogVisible = false
+    },
+    // 添加商品对话框关闭
+    addDialogVisibleClose() {
+      this.$refs.addProductFormRef.resetFields()
+    },
+    // 修改商品对话框关闭
+    editDialogVisibleClose() {
+      this.$refs.editProductFormRef.resetFields()
     }
+
   },
   created() {
     this.getProductList()
