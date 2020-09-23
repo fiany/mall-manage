@@ -8,7 +8,7 @@
     <el-card>
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="queryInfo.productName">
+          <el-input placeholder="请输入内容" v-model="queryProductListInfo.productName">
             <el-button slot="append" icon="el-icon-search" @click="getProductList"></el-button>
           </el-input>
         </el-col>
@@ -39,11 +39,10 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            {{ scope.row }}
-            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog()"></el-button>
-            <el-button type="danger" icon="el-icon-delete"></el-button>
+        <el-table-column label="操作" width="120px">
+          <template slot-scope="scope" >
+            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.productId)" size="mini"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -56,19 +55,49 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="totalNum"
         :current-page="pageNo"
-        :page-size="queryInfo.pageSize">
+        :page-size="queryProductListInfo.pageSize">
       </el-pagination>
     </el-card>
     <!-- 添加商品对话框-->
     <el-dialog
       title="添加商品"
       :visible.sync="addDialogVisible"
-      width="80%"
+      width="50%"
       @close="addDialogVisibleClose()">
-      <el-form :model="addProductForm" :rules="addProductFormRules" ref="addProductFormRef" label-width="100px"
-               class="demo-ruleForm">
-        <el-form-item label="商品名称" prop="productName">
-          <el-input v-model="addProductForm.productName"></el-input>
+      <el-form :model="addProductForm" :rules="addProductFormRules" ref="addProductFormRef" label-width="100px">
+        <el-form-item label="商品名称" prop="productName" >
+          <el-input v-model="addProductForm.productName" style="width: 130px" ></el-input>
+        </el-form-item>
+        <el-form-item label="商品价格" prop="price">
+          <el-input v-model="addProductForm.price" style="width: 130px"></el-input>
+        </el-form-item>
+        <el-form-item label="商品sn码" prop="productSn">
+          <el-input v-model="addProductForm.productSn" style="width: 130px"></el-input>
+        </el-form-item>
+        <el-form-item label="商品品牌名称" prop="productBrandId">
+          <el-select v-model="addProductForm.productBrandId" placeholder="请选择">
+            <el-option
+              v-for="item in productBrandList"
+              :key="item.productBrandId"
+              :label="item.productBrandName"
+              :value="item.productBrandId">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="商品分类名称" prop="productCategoryId">
+          <el-cascader :props="props"></el-cascader>
+        </el-form-item>
+        <el-form-item label="商品副标题" prop="subTitle">
+          <el-input v-model="addProductForm.subTitle" style="width: 130px"></el-input>
+        </el-form-item>
+        <el-form-item label="商品关键字" prop="keywords">
+          <el-input v-model="addProductForm.keywords" style="width: 130px"></el-input>
+        </el-form-item>
+        <el-form-item label="商品库存" prop="stock">
+          <el-input-number v-model="addProductForm.stock"  :min="1"  ></el-input-number>
+        </el-form-item>
+        <el-form-item label="商品详情" prop="productDetail">
+          <el-input v-model="addProductForm.productDetail" style="width: 130px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -82,10 +111,33 @@
       :visible.sync="editDialogVisible"
       width="80%"
       @close="editDialogVisibleClose()">
-      <el-form :model="addProductForm" :rules="addProductFormRules" ref="editProductFormRef" label-width="100px"
-               class="demo-ruleForm">
-        <el-form-item label="商品名称" prop="productName">
+      <el-form :model="addProductForm" :rules="addProductFormRules" ref="editProductFormRef" >
+        <el-form-item label="商品名称" >
           <el-input v-model="addProductForm.productName"></el-input>
+        </el-form-item>
+        <el-form-item label="商品价格" >
+          <el-input v-model="addProductForm.price"></el-input>
+        </el-form-item>
+        <el-form-item label="商品sn码" >
+          <el-input v-model="addProductForm.productSn"></el-input>
+        </el-form-item>
+        <el-form-item label="商品品牌名称" >
+          <el-input v-model="addProductForm.productBrandName"></el-input>
+        </el-form-item>
+        <el-form-item label="商品分类名称" >
+          <el-input v-model="addProductForm.productCategoryName"></el-input>
+        </el-form-item>
+        <el-form-item label="商品副标题" >
+          <el-input v-model="addProductForm.subTitle"></el-input>
+        </el-form-item>
+        <el-form-item label="商品关键字" >
+          <el-input v-model="addProductForm.keywords"></el-input>
+        </el-form-item>
+        <el-form-item label="商品库存" >
+          <el-input v-model="addProductForm.stock"></el-input>
+        </el-form-item>
+        <el-form-item label="商品详情" >
+          <el-input v-model="addProductForm.productDetail"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -100,18 +152,42 @@ export default {
   data() {
     return {
       productList: [],
-      // 请求参数
-      queryInfo: {
+      productBrandList: [],
+      productCategoryList: [],
+      // 商品列表请求参数
+      queryProductListInfo: {
         pageNo: 1,
         pageSize: 10,
         productName: ''
+      },
+      // 品牌列表请求参数
+      queryBrandListInfo: {
+
+      },
+      // 分类列表请求参数
+      queryCategoryListInfo: {
+        parentCategoryId: '0'
       },
       pageNo: 0,
       totalNum: 0,
       totalPage: 0,
       addDialogVisible: false,
       editDialogVisible: false,
-      addProductForm: {},
+      // 添加商品入参
+      addProductForm: {
+        keywords: '',
+        price: 0,
+        productBrandId: '',
+        productBrandName: '',
+        productCategoryId: '',
+        productCategoryName: '',
+        productDetail: '',
+        productId: '',
+        productName: '',
+        productSn: '',
+        stock: 0,
+        subTitle: ''
+      },
       addProductFormRules: {
         // 验证商品名称
         productName: [
@@ -122,30 +198,46 @@ export default {
     }
   },
   methods: {
+    // 获取商品列表
     async getProductList() {
-      const { data: res } = await this.$http.post('/product/v1/product/info/list', this.queryInfo
-      )
+      const { data: res } = await this.$http.post('/product/v1/product/info/list',
+        this.queryProductListInfo)
       if (res.code !== 0) return this.$message.error('获取商品列表出错')
       this.productList = res.data.list
       this.pageNo = res.data.pageNo
       this.totalNum = res.data.totalNum
       this.totalPage = res.data.totalPage
     },
+    // 获取品牌列表
+    async getBrandList() {
+      const { data: res } = await this.$http.post('/product/v1/brand/list', this.queryBrandListInfo)
+      if (res.code !== 0) return this.$message.error('获取商品列表出错')
+      this.productBrandList = res.data
+    },
+    // 获取分类列表
+    async getCategoryList() {
+      const { data: res } = await this.$http.post('/product/v1/category/list', this.queryCategoryListInfo)
+      if (res.code !== 0) return this.$message.error('获取商品列表出错')
+      this.productCategoryList = res.data
+    },
     // 监听分页值改变
     handleCurrentChange(newPage) {
-      this.queryInfo.pageNo = newPage
+      this.queryProductListInfo.pageNo = newPage
       this.getProductList()
     },
     // 监听页大小改变
     handleSizeChange(newSize) {
-      this.queryInfo.pageSize = newSize
+      this.queryProductListInfo.pageSize = newSize
       this.getProductList()
     },
-    showEditDialog() {
+    showEditDialog(productId) {
       this.editDialogVisible = true
     },
     // 添加商品
-    addProduct() {
+    async addProduct() {
+      const { data: res } = await this.$http.post('/product/v1/product/info/create', this.addProductForm)
+      if (res.code !== 0) return this.$message.error(res.message)
+      this.$message.success(res.message)
       this.addDialogVisible = false
     },
     // 编辑商品
@@ -154,6 +246,7 @@ export default {
     },
     // 添加商品对话框关闭
     addDialogVisibleClose() {
+      console.log('关闭成功')
       this.$refs.addProductFormRef.resetFields()
     },
     // 修改商品对话框关闭
@@ -164,6 +257,8 @@ export default {
   },
   created() {
     this.getProductList()
+    this.getBrandList()
+    this.getCategoryList()
   }
 }
 
