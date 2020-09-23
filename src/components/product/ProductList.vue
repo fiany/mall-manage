@@ -9,11 +9,11 @@
       <el-row :gutter="20">
         <el-col :span="7">
           <el-input placeholder="请输入内容" v-model="queryInfo.productName">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+            <el-button slot="append" icon="el-icon-search" @click="getProductList"></el-button>
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="getProductList">搜索</el-button>
+          <el-button type="primary" @click="addDialogVisible = true">添加商品</el-button>
         </el-col>
       </el-row>
       <!-- 列表-->
@@ -43,7 +43,21 @@
         :page-size="queryInfo.pageSize">
       </el-pagination>
     </el-card>
-
+    <!-- 添加商品对话框-->
+    <el-dialog
+      title="添加商品"
+      :visible.sync="addDialogVisible"
+      width="80%">
+      <el-form :model="addProductForm" :rules="addProductFormRules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="商品名称" prop="productName">
+          <el-input v-model="addProductForm.productName"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="addDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -59,7 +73,16 @@ export default {
       },
       pageNo: 0,
       totalNum: 0,
-      totalPage: 0
+      totalPage: 0,
+      addDialogVisible: false,
+      addProductForm: {},
+      addProductFormRules: {
+        // 验证商品名称
+        productName: [
+          { required: true, message: '请输入商品名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在1到20个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {

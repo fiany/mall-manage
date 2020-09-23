@@ -19,7 +19,8 @@ import {
   Col,
   Table,
   TableColumn,
-  Pagination
+  Pagination,
+  Dialog
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -42,4 +43,5 @@ Vue.use(Col)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
+Vue.use(Dialog)
 Vue.prototype.$message = Message
