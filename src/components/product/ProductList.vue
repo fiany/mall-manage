@@ -40,8 +40,9 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120px">
-          <template slot-scope="scope" >
-            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.productId)" size="mini"></el-button>
+          <template slot-scope="scope">
+            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.productId)"
+                       size="mini"></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
           </template>
         </el-table-column>
@@ -65,8 +66,8 @@
       width="50%"
       @close="addDialogVisibleClose()">
       <el-form :model="addProductForm" :rules="addProductFormRules" ref="addProductFormRef" label-width="100px">
-        <el-form-item label="商品名称" prop="productName" >
-          <el-input v-model="addProductForm.productName" style="width: 130px" ></el-input>
+        <el-form-item label="商品名称" prop="productName">
+          <el-input v-model="addProductForm.productName" style="width: 130px"></el-input>
         </el-form-item>
         <el-form-item label="商品价格" prop="price">
           <el-input v-model="addProductForm.price" style="width: 130px"></el-input>
@@ -85,7 +86,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="商品分类名称" prop="productCategoryId">
-          <el-cascader :props="props"></el-cascader>
+          <el-cascader
+            :options="productCategoryList"
+            :props="{ expandTrigger: 'hover',checkStrictly: true,value: 'id',label: 'name',children: 'children'}"
+            clearable
+            @change="selectCategory"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="商品副标题" prop="subTitle">
           <el-input v-model="addProductForm.subTitle" style="width: 130px"></el-input>
@@ -94,7 +100,7 @@
           <el-input v-model="addProductForm.keywords" style="width: 130px"></el-input>
         </el-form-item>
         <el-form-item label="商品库存" prop="stock">
-          <el-input-number v-model="addProductForm.stock"  :min="1"  ></el-input-number>
+          <el-input-number v-model="addProductForm.stock" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="商品详情" prop="productDetail">
           <el-input v-model="addProductForm.productDetail" style="width: 130px"></el-input>
@@ -111,32 +117,32 @@
       :visible.sync="editDialogVisible"
       width="80%"
       @close="editDialogVisibleClose()">
-      <el-form :model="addProductForm" :rules="addProductFormRules" ref="editProductFormRef" >
-        <el-form-item label="商品名称" >
+      <el-form :model="addProductForm" :rules="addProductFormRules" ref="editProductFormRef">
+        <el-form-item label="商品名称">
           <el-input v-model="addProductForm.productName"></el-input>
         </el-form-item>
-        <el-form-item label="商品价格" >
+        <el-form-item label="商品价格">
           <el-input v-model="addProductForm.price"></el-input>
         </el-form-item>
-        <el-form-item label="商品sn码" >
+        <el-form-item label="商品sn码">
           <el-input v-model="addProductForm.productSn"></el-input>
         </el-form-item>
-        <el-form-item label="商品品牌名称" >
+        <el-form-item label="商品品牌名称">
           <el-input v-model="addProductForm.productBrandName"></el-input>
         </el-form-item>
-        <el-form-item label="商品分类名称" >
+        <el-form-item label="商品分类名称">
           <el-input v-model="addProductForm.productCategoryName"></el-input>
         </el-form-item>
-        <el-form-item label="商品副标题" >
+        <el-form-item label="商品副标题">
           <el-input v-model="addProductForm.subTitle"></el-input>
         </el-form-item>
-        <el-form-item label="商品关键字" >
+        <el-form-item label="商品关键字">
           <el-input v-model="addProductForm.keywords"></el-input>
         </el-form-item>
-        <el-form-item label="商品库存" >
+        <el-form-item label="商品库存">
           <el-input v-model="addProductForm.stock"></el-input>
         </el-form-item>
-        <el-form-item label="商品详情" >
+        <el-form-item label="商品详情">
           <el-input v-model="addProductForm.productDetail"></el-input>
         </el-form-item>
       </el-form>
@@ -161,9 +167,7 @@ export default {
         productName: ''
       },
       // 品牌列表请求参数
-      queryBrandListInfo: {
-
-      },
+      queryBrandListInfo: {},
       // 分类列表请求参数
       queryCategoryListInfo: {
         parentCategoryId: '0'
@@ -216,7 +220,7 @@ export default {
     },
     // 获取分类列表
     async getCategoryList() {
-      const { data: res } = await this.$http.post('/product/v1/category/list', this.queryCategoryListInfo)
+      const { data: res } = await this.$http.post('/product/v1/category/tree', this.queryCategoryListInfo)
       if (res.code !== 0) return this.$message.error('获取商品列表出错')
       this.productCategoryList = res.data
     },
@@ -252,8 +256,11 @@ export default {
     // 修改商品对话框关闭
     editDialogVisibleClose() {
       this.$refs.editProductFormRef.resetFields()
+    },
+    // 选中商品分类
+    selectCategory(value) {
+      this.addProductForm.productCategoryId = value[0]
     }
-
   },
   created() {
     this.getProductList()

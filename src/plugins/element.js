@@ -24,7 +24,8 @@ import {
   InputNumber,
   Select,
   Option,
-  Cascader
+  Cascader,
+  Switch
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -52,4 +53,5 @@ Vue.use(InputNumber)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Cascader)
+Vue.use(Switch)
 Vue.prototype.$message = Message
