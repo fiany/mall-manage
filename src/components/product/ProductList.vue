@@ -20,30 +20,26 @@
       <el-table
         :data="productList" border stripe>
         <el-table-column type="index" label="#"></el-table-column>
-        <el-table-column prop="productName" label="商品名称"></el-table-column>
-        <el-table-column prop="price" label="商品价格"></el-table-column>
-        <el-table-column prop="productSn" label="商品sn码"></el-table-column>
-        <el-table-column prop="productBrandName" label="商品品牌名称"></el-table-column>
-        <el-table-column prop="productCategoryName" label="商品分类名称"></el-table-column>
-        <el-table-column prop="subTitle" label="商品副标题"></el-table-column>
-        <el-table-column prop="keywords" label="商品关键字"></el-table-column>
-        <el-table-column prop="sale" label="商品销量"></el-table-column>
-        <el-table-column prop="stock" label="商品库存"></el-table-column>
-        <el-table-column prop="productDetail" label="商品详情"></el-table-column>
-        <el-table-column label="商品状态">
+        <el-table-column prop="productName" label="名称"></el-table-column>
+        <el-table-column prop="price" label="价格"></el-table-column>
+        <el-table-column prop="productSn" label="sn码"></el-table-column>
+        <el-table-column prop="productBrandName" label="品牌名称"></el-table-column>
+        <el-table-column prop="productCategoryName" label="分类名称"></el-table-column>
+        <el-table-column prop="subTitle" label="副标题"></el-table-column>
+        <el-table-column prop="keywords" label="关键字"></el-table-column>
+        <el-table-column prop="sale" label="销量"></el-table-column>
+        <el-table-column prop="stock" label="库存"></el-table-column>
+        <el-table-column label="操作" width="170px" fixed="right">
           <template slot-scope="scope">
-            <el-switch
-              v-model="scope.row.status"
-              active-color="#13ce66"
-              inactive-color="#ff4949">
+            <el-switch v-model="scope.row.productStatus"
+                       :active-value = 1
+                       :inactive-value = 0
+                       @change="updateProductStatus(scope.row)">
             </el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="120px">
-          <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.productId)"
                        size="mini"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini"
+                       @click="deleteProduct(scope.row.productId)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,12 +81,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品分类名称" prop="productCategoryId">
+        <el-form-item label="商品分类名称" prop="selectCategoryIds">
           <el-cascader
+            v-model="selectCategoryIds"
             :options="productCategoryList"
-            :props="{ expandTrigger: 'hover',checkStrictly: true,value: 'id',label: 'name',children: 'children'}"
+            :props="{ expandTrigger: 'click',checkStrictly: true,
+            value: 'id',label: 'name',children: 'children'}"
             clearable
-            @change="selectCategory"
+            ref="selectCategoryIdRef"
+            @change="closeSelectCategory"
           ></el-cascader>
         </el-form-item>
         <el-form-item label="商品副标题" prop="subTitle">
@@ -103,7 +102,7 @@
           <el-input-number v-model="addProductForm.stock" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="商品详情" prop="productDetail">
-          <el-input v-model="addProductForm.productDetail" style="width: 130px"></el-input>
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="addProductForm.productDetail" ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -160,6 +159,7 @@ export default {
       productList: [],
       productBrandList: [],
       productCategoryList: [],
+      selectCategoryIds: [],
       // 商品列表请求参数
       queryProductListInfo: {
         pageNo: 1,
@@ -192,6 +192,9 @@ export default {
         stock: 0,
         subTitle: ''
       },
+      deleteProductForm: {
+        productId: ''
+      },
       addProductFormRules: {
         // 验证商品名称
         productName: [
@@ -206,7 +209,6 @@ export default {
     async getProductList() {
       const { data: res } = await this.$http.post('/product/v1/product/info/list',
         this.queryProductListInfo)
-      if (res.code !== 0) return this.$message.error('获取商品列表出错')
       this.productList = res.data.list
       this.pageNo = res.data.pageNo
       this.totalNum = res.data.totalNum
@@ -215,13 +217,11 @@ export default {
     // 获取品牌列表
     async getBrandList() {
       const { data: res } = await this.$http.post('/product/v1/brand/list', this.queryBrandListInfo)
-      if (res.code !== 0) return this.$message.error('获取商品列表出错')
       this.productBrandList = res.data
     },
     // 获取分类列表
     async getCategoryList() {
       const { data: res } = await this.$http.post('/product/v1/category/tree', this.queryCategoryListInfo)
-      if (res.code !== 0) return this.$message.error('获取商品列表出错')
       this.productCategoryList = res.data
     },
     // 监听分页值改变
@@ -234,15 +234,28 @@ export default {
       this.queryProductListInfo.pageSize = newSize
       this.getProductList()
     },
+    // 显示添加商品修改模态框
     showEditDialog(productId) {
       this.editDialogVisible = true
     },
+    // 删除商品
+    async deleteProduct(productId) {
+      this.deleteProductForm.productId = productId
+      await this.$http.post('/product/v1/product/info/delete', this.deleteProductForm)
+      await this.getProductList()
+    },
+    async updateProductStatus(row) {
+      await this.$http.post('/product/v1/product/info/status/update', {
+        productId: row.productId,
+        productStatus: row.productStatus
+      })
+    },
     // 添加商品
     async addProduct() {
-      const { data: res } = await this.$http.post('/product/v1/product/info/create', this.addProductForm)
-      if (res.code !== 0) return this.$message.error(res.message)
-      this.$message.success(res.message)
+      this.addProductForm.productCategoryId = this.selectCategoryIds[0]
+      await this.$http.post('/product/v1/product/info/create', this.addProductForm)
       this.addDialogVisible = false
+      await this.getProductList()
     },
     // 编辑商品
     editProduct() {
@@ -250,16 +263,16 @@ export default {
     },
     // 添加商品对话框关闭
     addDialogVisibleClose() {
-      console.log('关闭成功')
       this.$refs.addProductFormRef.resetFields()
+      this.selectCategoryIds = []
     },
     // 修改商品对话框关闭
     editDialogVisibleClose() {
       this.$refs.editProductFormRef.resetFields()
     },
     // 选中商品分类
-    selectCategory(value) {
-      this.addProductForm.productCategoryId = value[0]
+    closeSelectCategory() {
+      this.$refs.selectCategoryIdRef.dropDownVisible = false
     }
   },
   created() {
@@ -271,5 +284,7 @@ export default {
 
 </script>
 <style lang="less" scoped>
-
+.el-switch{
+  margin-right: 10px;
+}
 </style>
