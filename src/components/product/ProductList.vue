@@ -28,7 +28,6 @@
         <el-table-column prop="subTitle" label="副标题"></el-table-column>
         <el-table-column prop="keywords" label="关键字"></el-table-column>
         <el-table-column prop="sale" label="销量"></el-table-column>
-        <el-table-column prop="stock" label="库存"></el-table-column>
         <el-table-column label="操作" width="170px" fixed="right">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.productStatus"
@@ -97,9 +96,6 @@
         </el-form-item>
         <el-form-item label="商品关键字" prop="keywords">
           <el-input v-model="addProductForm.keywords" style="width: 130px"></el-input>
-        </el-form-item>
-        <el-form-item label="商品库存" prop="stock">
-          <el-input-number v-model="addProductForm.stock" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="商品详情" prop="productDetail">
           <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="addProductForm.productDetail" ></el-input>
