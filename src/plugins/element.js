@@ -25,7 +25,8 @@ import {
   Select,
   Option,
   Cascader,
-  Switch
+  Switch,
+  Image
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -54,4 +55,5 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Cascader)
 Vue.use(Switch)
+Vue.use(Image)
 Vue.prototype.$message = Message

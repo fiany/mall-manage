@@ -103,6 +103,7 @@ export default {
   },
   methods: {
     logout() {
+      this.$http.get('/user/v1/auth/logout')
       window.sessionStorage.clear()
       this.$router.push('/login')
     },

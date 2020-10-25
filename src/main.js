@@ -57,10 +57,8 @@ axios.interceptors.response.use((response) => {
   return response
 }, (err) => {
   if (err.response) { // 响应错误码处理
-    console.log(err)
     return Promise.reject(err.response)
   }
-  console.log(err)
   if (!window.navigator.online) { // 断网处理
     return -1
   }
