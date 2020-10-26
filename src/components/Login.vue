@@ -47,6 +47,9 @@
   </div>
 </template>
 <script>
+import { userLogin } from '@/api/user'
+import { captchaImage } from '@/api/system'
+
 export default {
   data() {
     return {
@@ -81,17 +84,15 @@ export default {
       this.loginForm.imgId = this.captchaImageInfo.imgId
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const { data: res } = await this.$http.post('/user/v1/auth/login', this.loginForm)
-        if (res.code !== 0) return this.$message.error('登录失败')
-        this.$message.success('登录成功')
-        // 保存token信息到sessionStorage
-        // window.sessionStorage.setItem("token",res.data.token)
+        // const { data: res } = await this.$http.post('/user/v1/auth/login', this.loginForm)
+        // if (res.code !== 0) return this.$message.error('登录失败')
+        await userLogin(this.loginForm)
         // 登录成功跳转到后台主页
-        this.$router.push('/home')
+        await this.$router.push('/home')
       })
     },
     async captchaImageFun() {
-      const { data: res } = await this.$http.get('/system/v1/common/captcha/img', this.loginForm)
+      const { data: res } = await captchaImage()
       this.captchaImageInfo.base64 = res.data.base64
       this.captchaImageInfo.imgId = res.data.imgId
     }
