@@ -149,6 +149,15 @@
   </div>
 </template>
 <script>
+import {
+  brandList,
+  categoryTree,
+  productInfoCreate,
+  productInfoDelete,
+  productInfoList,
+  productInfoStatusUpdate
+} from '@/api/product'
+
 export default {
   data() {
     return {
@@ -203,7 +212,7 @@ export default {
   methods: {
     // 获取商品列表
     async getProductList() {
-      const { data: res } = await this.$http.post('/product/v1/product/info/list',
+      const { data: res } = await productInfoList(
         this.queryProductListInfo)
       this.productList = res.data.list
       this.pageNo = res.data.pageNo
@@ -212,12 +221,12 @@ export default {
     },
     // 获取品牌列表
     async getBrandList() {
-      const { data: res } = await this.$http.post('/product/v1/brand/list', this.queryBrandListInfo)
+      const { data: res } = await brandList(this.queryBrandListInfo)
       this.productBrandList = res.data
     },
     // 获取分类列表
     async getCategoryList() {
-      const { data: res } = await this.$http.post('/product/v1/category/tree', this.queryCategoryListInfo)
+      const { data: res } = await categoryTree(this.queryCategoryListInfo)
       this.productCategoryList = res.data
     },
     // 监听分页值改变
@@ -237,11 +246,11 @@ export default {
     // 删除商品
     async deleteProduct(productId) {
       this.deleteProductForm.productId = productId
-      await this.$http.post('/product/v1/product/info/delete', this.deleteProductForm)
+      await productInfoDelete(this.deleteProductForm)
       await this.getProductList()
     },
     async updateProductStatus(row) {
-      await this.$http.post('/product/v1/product/info/status/update', {
+      await productInfoStatusUpdate({
         productId: row.productId,
         productStatus: row.productStatus
       })
@@ -249,7 +258,7 @@ export default {
     // 添加商品
     async addProduct() {
       this.addProductForm.productCategoryId = this.selectCategoryIds[0]
-      await this.$http.post('/product/v1/product/info/create', this.addProductForm)
+      await productInfoCreate(this.addProductForm)
       this.addDialogVisible = false
       await this.getProductList()
     },

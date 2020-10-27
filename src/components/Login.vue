@@ -84,8 +84,6 @@ export default {
       this.loginForm.imgId = this.captchaImageInfo.imgId
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        // const { data: res } = await this.$http.post('/user/v1/auth/login', this.loginForm)
-        // if (res.code !== 0) return this.$message.error('登录失败')
         await userLogin(this.loginForm)
         // 登录成功跳转到后台主页
         await this.$router.push('/home')
