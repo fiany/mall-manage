@@ -214,20 +214,20 @@ export default {
     async getProductList() {
       const { data: res } = await productInfoList(
         this.queryProductListInfo)
-      this.productList = res.data.list
-      this.pageNo = res.data.pageNo
-      this.totalNum = res.data.totalNum
-      this.totalPage = res.data.totalPage
+      this.productList = res.list
+      this.pageNo = res.pageNo
+      this.totalNum = res.totalNum
+      this.totalPage = res.totalPage
     },
     // 获取品牌列表
     async getBrandList() {
       const { data: res } = await brandList(this.queryBrandListInfo)
-      this.productBrandList = res.data
+      this.productBrandList = res
     },
     // 获取分类列表
     async getCategoryList() {
       const { data: res } = await categoryTree(this.queryCategoryListInfo)
-      this.productCategoryList = res.data
+      this.productCategoryList = res
     },
     // 监听分页值改变
     handleCurrentChange(newPage) {

@@ -47,7 +47,7 @@
   </div>
 </template>
 <script>
-import { userLogin } from '@/api/user'
+import { userInfoLogin, userLogin } from '@/api/user'
 import { captchaImage } from '@/api/system'
 
 export default {
@@ -91,12 +91,19 @@ export default {
     },
     async captchaImageFun() {
       const { data: res } = await captchaImage()
-      this.captchaImageInfo.base64 = res.data.base64
-      this.captchaImageInfo.imgId = res.data.imgId
+      this.captchaImageInfo.base64 = res.base64
+      this.captchaImageInfo.imgId = res.imgId
+    },
+    async userInfoLogin() {
+      const { code: resCode } = await userInfoLogin()
+      if (resCode === 0) {
+        // 能获取到用户信息可以直接跳转到首页
+        await this.$router.push('/home')
+      }
     }
   },
   created() {
-    // TODO 调用获取用户信息接口，如果获获取到数据跳转到首页
+    this.userInfoLogin()
     this.captchaImageFun()
   }
 }

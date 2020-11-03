@@ -1,5 +1,5 @@
 <template>
-  <el-container class="home-containser">
+  <el-container class="home-container">
     <el-header>
       <div>
         <img src="../assets/logo.png" alt="">
@@ -128,7 +128,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .home-containser {
+  .home-container {
     width: 100%;
     height: 100%;
   }
