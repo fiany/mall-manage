@@ -10,20 +10,6 @@ import './assets/fonts/iconfont.css'
 
 import axios from 'axios'
 
-const getBaseUrl = (env) => {
-  let base = {
-    production: '/',
-    development: 'http://localhost:7000',
-    test: 'http://localhost:7000'
-  }[env]
-  if (!base) {
-    base = '/'
-  }
-  return base
-}
-
-// 设置请求根路径
-axios.defaults.baseURL = getBaseUrl(process.env.NODE_ENV)
 axios.interceptors.request.use(config => {
   // 请求拦截器
   config.headers.Authorization = window.sessionStorage.getItem('token')

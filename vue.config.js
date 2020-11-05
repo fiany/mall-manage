@@ -53,15 +53,12 @@ module.exports = {
     port: 9000,
     https: false,
     hotOnly: false,
-    // proxy: { // 设置代理
-    //   '/api': {
-    //     target: 'http://www.xxxxx.com/',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/api': '/api'
-    //     }
-    //   }
-    // },
+    proxy: { // 设置代理
+      '/': {
+        target: 'http://localhost:7000',
+        changeOrigin: true
+      }
+    },
     disableHostCheck: true
   },
   // 第三方插件配置
