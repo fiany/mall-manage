@@ -32,3 +32,23 @@ export const productInfoStatusUpdate = (parames) => {
 export const productInfoCreate = (parames) => {
   return http('post', '/product/v1/product/info/create', parames, true)
 }
+
+// 品牌列表分页
+export const brandPageList = (parames) => {
+  return http('post', '/product/v1/brand/page-list', parames)
+}
+
+// 品牌删除
+export const brandDelete = (parames) => {
+  return http('post', '/product/v1/brand/delete', parames, true)
+}
+
+// 品牌创建
+export const addBrand = (parames) => {
+  return http('post', '/product/v1/brand/create', parames, true)
+}
+
+// 品牌更新
+export const brandUpdate = (parames) => {
+  return http('post', '/product/v1/brand/update', parames, true)
+}

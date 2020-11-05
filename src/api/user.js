@@ -34,5 +34,9 @@ export const userList = (params) => {
 }
 // 修改用户锁定状态
 export const userBlockedUpdate = (params) => {
-  return http('post', '/user/v1/user/blocked/update', params)
+  return http('post', '/user/v1/user/blocked/update', params, true)
+}
+// 修改用户管理员状态
+export const userManagerUpdate = (params) => {
+  return http('post', '/user/v1/user/manager/update', params, true)
 }

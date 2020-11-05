@@ -28,13 +28,19 @@
         <el-table-column prop="subTitle" label="副标题"></el-table-column>
         <el-table-column prop="keywords" label="关键字"></el-table-column>
         <el-table-column prop="sale" label="销量"></el-table-column>
-        <el-table-column label="操作" width="170px" fixed="right">
+        <el-table-column label="是否上架" >
           <template slot-scope="scope">
             <el-switch v-model="scope.row.productStatus"
                        :active-value = 1
                        :inactive-value = 0
+                       inactive-color="#ff4949"
+                       active-color="#13ce66"
                        @change="updateProductStatus(scope.row)">
             </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="170px" fixed="right">
+          <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.productId)"
                        size="mini"></el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini"

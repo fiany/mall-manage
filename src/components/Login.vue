@@ -98,7 +98,7 @@ export default {
       const { code: resCode } = await userInfoLogin()
       if (resCode === 0) {
         // 能获取到用户信息可以直接跳转到首页
-        await this.$router.push('/home')
+        // await this.$router.push('/home')
       }
     }
   },

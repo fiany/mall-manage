@@ -5,6 +5,7 @@ import Home from '../components/Home.vue'
 import Welcome from '../components/Welcome.vue'
 import ProductList from '../components/product/ProductList.vue'
 import CategoryList from '../components/product/CategoryList.vue'
+import BrandList from '../components/product/BrandList.vue'
 import UserList from '../components/user/UserList.vue'
 
 Vue.use(VueRouter)
@@ -39,6 +40,11 @@ const routes = [
         path: '/category/list',
         name: 'CategoryList',
         component: CategoryList
+      },
+      {
+        path: '/brand/list',
+        name: 'BrandList',
+        component: BrandList
       },
       {
         path: '/user/list',

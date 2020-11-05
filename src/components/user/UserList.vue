@@ -19,12 +19,23 @@
         <el-table-column prop="username" label="用户名"></el-table-column>
         <el-table-column label="是否可用" width="170px" fixed="right">
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.isBlocked"
+            <el-switch v-model="scope.row.blocked"
                        :active-value=0
                        :inactive-value=1
                        inactive-color="#ff4949"
                        active-color="#13ce66"
                        @change="updateUserBlocked(scope.row)">
+            </el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否为管理员" width="170px" fixed="right">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.manager"
+                       :active-value=1
+                       :inactive-value=0
+                       inactive-color="#ff4949"
+                       active-color="#13ce66"
+                       @change="updateUserManager(scope.row)">
             </el-switch>
           </template>
         </el-table-column>
@@ -45,7 +56,7 @@
 </template>
 
 <script>
-import { userList, userBlockedUpdate } from '@/api/user'
+import { userList, userBlockedUpdate, userManagerUpdate } from '@/api/user'
 
 export default {
   data() {
@@ -81,7 +92,15 @@ export default {
     async updateUserBlocked(row) {
       await userBlockedUpdate({
         userId: row.userId,
-        blocked: row.isBlocked
+        blocked: row.blocked
+      })
+      await this.getUserList()
+    },
+    // 更新用户管理员状态
+    async updateUserManager(row) {
+      await userManagerUpdate({
+        userId: row.userId,
+        manager: row.manager
       })
       await this.getUserList()
     }
