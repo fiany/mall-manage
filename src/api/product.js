@@ -18,6 +18,11 @@ export const categoryTree = (parames) => {
   return http('post', '/product/v1/category/tree', parames)
 }
 
+// 商品分类列表
+export const categoryList = (parames) => {
+  return http('post', '/product/v1/category/list', parames)
+}
+
 // 商品删除
 export const productInfoDelete = (parames) => {
   return http('post', '/product/v1/product/info/delete', parames, true)

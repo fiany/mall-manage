@@ -43,7 +43,7 @@
       </el-pagination>
     </el-card>
     <el-dialog
-      title="brandTitle"
+      :title="brandTitle"
       :visible.sync="brandVisible"
       width="40%"
       @close="brandVisibleClose()">
