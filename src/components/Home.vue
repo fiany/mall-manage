@@ -67,10 +67,10 @@ export default {
 
       {
         id: 101,
-        name: '商品管理',
+        name: '商品模块',
         child: [{
           id: 1011,
-          name: '商品列表',
+          name: '商品管理',
           path: '/product/list'
         },
         {

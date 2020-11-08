@@ -32,6 +32,21 @@ export const productSpecificationCategoryAdd = (parames) => {
   return http('post', '/product/v1/product/specification/category/add', parames, true)
 }
 
+// 商品规格信息根据商品规格分类初始化
+export const productSpecificationInit = (parames) => {
+  return http('post', '/product/v1/product/specification/info/init', parames, true)
+}
+
+// 商品规格信息详情
+export const productSpecificationInfo = (parames) => {
+  return http('post', '/product/v1/product/specification/info', parames)
+}
+
+// 商品规格信息修改
+export const productSpecificationInfoUpdate = (parames) => {
+  return http('post', '/product/v1/product/specification/info/update', parames, true)
+}
+
 // 商品创建
 export const productInfoCreate = (parames) => {
   return http('post', '/product/v1/product/info/create', parames, true)

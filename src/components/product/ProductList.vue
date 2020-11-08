@@ -2,8 +2,8 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>商品模块</el-breadcrumb-item>
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
-      <el-breadcrumb-item>商品列表</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
       <el-row :gutter="20">
@@ -39,13 +39,19 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="230px" fixed="right">
+        <el-table-column label="操作" width="320px" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-edit" @click="showEditDialog(scope.row)"
                        size="mini">修改
             </el-button>
             <el-button type="text" icon="el-icon-edit" @click="showProductSpecificationConfig(scope.row.productId)"
                        size="mini">规格分类配置
+            </el-button>
+            <el-button type="text" icon="el-icon-edit" @click="productSpecificationInitFun(scope.row.productId)"
+                       size="mini">初始化规格
+            </el-button>
+            <el-button type="text" icon="el-icon-edit" @click="showProductSpecificationInfo(scope.row.productId)"
+                       size="mini">规格信息
             </el-button>
             <el-button type="text" icon="el-icon-delete" size="mini"
                        @click="deleteProduct(scope.row.productId)">删除
@@ -127,6 +133,12 @@
                @close="productSpecificationConfig.dialogVisible = false">
       <product-specification-config :product-id="productSpecificationConfig.productId"></product-specification-config>
     </el-dialog>
+    <el-dialog title="规格分类配置"
+            :visible.sync="productSpecificationInfo.dialogVisible"
+            width="80%"
+            @close="productSpecificationInfo.dialogVisible = false">
+      <ProductSpecificationInfo :product-id="productSpecificationInfo.productId"></ProductSpecificationInfo>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -137,10 +149,12 @@ import {
   productInfoUpdate,
   productInfoDelete,
   productInfoList,
-  productInfoStatusUpdate
+  productInfoStatusUpdate,
+  productSpecificationInit
 } from '@/api/product'
 
 import ProductSpecificationConfig from '@/components/product/ProductSpecificationConfig'
+import ProductSpecificationInfo from '@/components/product/ProductSpecificationInfo'
 
 export default {
   data() {
@@ -193,6 +207,11 @@ export default {
       },
       // 规格配置对话框
       productSpecificationConfig: {
+        productId: '',
+        dialogVisible: false
+      },
+      // 规格信息对话框
+      productSpecificationInfo: {
         productId: '',
         dialogVisible: false
       }
@@ -280,6 +299,17 @@ export default {
     showProductSpecificationConfig(productId) {
       this.productSpecificationConfig.productId = productId
       this.productSpecificationConfig.dialogVisible = true
+    },
+    // 展示规格信息
+    showProductSpecificationInfo(productId) {
+      this.productSpecificationInfo.productId = productId
+      this.productSpecificationInfo.dialogVisible = true
+    },
+    // 初始化规格
+    productSpecificationInitFun(productId) {
+      productSpecificationInit({
+        productId: productId
+      })
     }
   },
   created() {
@@ -288,7 +318,8 @@ export default {
     this.getCategoryList()
   },
   components: {
-    ProductSpecificationConfig
+    ProductSpecificationConfig,
+    ProductSpecificationInfo
   }
 }
 

@@ -29,7 +29,9 @@ import {
   Image,
   Tree,
   Link,
-  Tag
+  Tag,
+  TabPane,
+  Tabs
 } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -62,4 +64,6 @@ Vue.use(Image)
 Vue.use(Tree)
 Vue.use(Link)
 Vue.use(Tag)
+Vue.use(TabPane)
+Vue.use(Tabs)
 Vue.prototype.$message = Message

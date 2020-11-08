@@ -32,6 +32,12 @@ export const userPermissionTree = (params) => {
 export const userList = (params) => {
   return http('post', '/user/v1/user/list', params)
 }
+
+// 获取用户地址列表
+export const userAddressList = (params) => {
+  return http('post', '/user/v1/user/address/list/manage', params)
+}
+
 // 修改用户锁定状态
 export const userBlockedUpdate = (params) => {
   return http('post', '/user/v1/user/blocked/update', params, true)
