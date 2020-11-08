@@ -8,19 +8,9 @@ export const productInfoList = (params) => {
   return http('post', '/product/v1/product/info/list', params)
 }
 
-// 品牌列表
-export const brandList = (parames) => {
-  return http('post', '/product/v1/brand/list', parames)
-}
-
-// 商品分类树
-export const categoryTree = (parames) => {
-  return http('post', '/product/v1/category/tree', parames)
-}
-
-// 商品分类列表
-export const categoryList = (parames) => {
-  return http('post', '/product/v1/category/list', parames)
+// 商品更新
+export const productInfoUpdate = (params) => {
+  return http('post', '/product/v1/product/info/update', params)
 }
 
 // 商品删除
@@ -31,6 +21,15 @@ export const productInfoDelete = (parames) => {
 // 商品上下架状态更新
 export const productInfoStatusUpdate = (parames) => {
   return http('post', '/product/v1/product/info/status/update', parames, true)
+}
+// 获取商品规格分类配置
+export const productSpecificationCategoryInfo = (parames) => {
+  return http('post', '/product/v1/product/specification/category/info', parames)
+}
+
+// 获取商品规格分类配置添加
+export const productSpecificationCategoryAdd = (parames) => {
+  return http('post', '/product/v1/product/specification/category/add', parames, true)
 }
 
 // 商品创建
@@ -56,4 +55,34 @@ export const addBrand = (parames) => {
 // 品牌更新
 export const brandUpdate = (parames) => {
   return http('post', '/product/v1/brand/update', parames, true)
+}
+
+// 品牌列表
+export const brandList = (parames) => {
+  return http('post', '/product/v1/brand/list', parames)
+}
+
+// 商品分类树
+export const categoryTree = (parames) => {
+  return http('post', '/product/v1/category/tree', parames)
+}
+
+// 商品分类列表
+export const categoryList = (parames) => {
+  return http('post', '/product/v1/category/list', parames)
+}
+
+// 商品分类新增
+export const categoryCreate = (parames) => {
+  return http('post', '/product/v1/category/create', parames, true)
+}
+
+// 商品分类修改
+export const categoryUpdate = (parames) => {
+  return http('post', '/product/v1/category/update', parames, true)
+}
+
+// 商品分类删除
+export const categoryDelete = (parames) => {
+  return http('post', '/product/v1/category/delete', parames, true)
 }

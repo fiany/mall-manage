@@ -139,6 +139,7 @@ export default {
         await brandUpdate(this.addBrandRequest)
       }
       this.brandVisible = false
+      this.brandForm.productBrandId = ''
       await this.getBrandPageList()
     },
     // 关闭对话框

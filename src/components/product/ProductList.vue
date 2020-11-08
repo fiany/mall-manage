@@ -13,7 +13,7 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible = true">添加商品</el-button>
+          <el-button type="primary" @click="showAddDialog">添加商品</el-button>
         </el-col>
       </el-row>
       <!-- 列表-->
@@ -28,23 +28,28 @@
         <el-table-column prop="subTitle" label="副标题"></el-table-column>
         <el-table-column prop="keywords" label="关键字"></el-table-column>
         <el-table-column prop="sale" label="销量"></el-table-column>
-        <el-table-column label="是否上架" >
+        <el-table-column label="是否上架">
           <template slot-scope="scope">
             <el-switch v-model="scope.row.productStatus"
-                       :active-value = 1
-                       :inactive-value = 0
+                       :active-value=1
+                       :inactive-value=0
                        inactive-color="#ff4949"
                        active-color="#13ce66"
                        @change="updateProductStatus(scope.row)">
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="170px" fixed="right">
+        <el-table-column label="操作" width="230px" fixed="right">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.productId)"
-                       size="mini"></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini"
-                       @click="deleteProduct(scope.row.productId)"></el-button>
+            <el-button type="text" icon="el-icon-edit" @click="showEditDialog(scope.row)"
+                       size="mini">修改
+            </el-button>
+            <el-button type="text" icon="el-icon-edit" @click="showProductSpecificationConfig(scope.row.productId)"
+                       size="mini">规格分类配置
+            </el-button>
+            <el-button type="text" icon="el-icon-delete" size="mini"
+                       @click="deleteProduct(scope.row.productId)">删除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -104,7 +109,11 @@
           <el-input v-model="addProductForm.keywords" style="width: 130px"></el-input>
         </el-form-item>
         <el-form-item label="商品详情" prop="productDetail">
-          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}" v-model="addProductForm.productDetail" ></el-input>
+          <el-input type="textarea" :autosize="{ minRows: 2, maxRows: 4}"
+                    v-model="addProductForm.productDetail"></el-input>
+        </el-form-item>
+        <el-form-item label="商品图片" prop="pictures">
+          <el-input v-model="addProductForm.pictures"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -112,45 +121,11 @@
       <el-button type="primary" @click="addProduct">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 修改商品对话框-->
-    <el-dialog
-      title="修改商品"
-      :visible.sync="editDialogVisible"
-      width="80%"
-      @close="editDialogVisibleClose()">
-      <el-form :model="addProductForm" :rules="addProductFormRules" ref="editProductFormRef">
-        <el-form-item label="商品名称">
-          <el-input v-model="addProductForm.productName"></el-input>
-        </el-form-item>
-        <el-form-item label="商品价格">
-          <el-input v-model="addProductForm.price"></el-input>
-        </el-form-item>
-        <el-form-item label="商品sn码">
-          <el-input v-model="addProductForm.productSn"></el-input>
-        </el-form-item>
-        <el-form-item label="商品品牌名称">
-          <el-input v-model="addProductForm.productBrandName"></el-input>
-        </el-form-item>
-        <el-form-item label="商品分类名称">
-          <el-input v-model="addProductForm.productCategoryName"></el-input>
-        </el-form-item>
-        <el-form-item label="商品副标题">
-          <el-input v-model="addProductForm.subTitle"></el-input>
-        </el-form-item>
-        <el-form-item label="商品关键字">
-          <el-input v-model="addProductForm.keywords"></el-input>
-        </el-form-item>
-        <el-form-item label="商品库存">
-          <el-input v-model="addProductForm.stock"></el-input>
-        </el-form-item>
-        <el-form-item label="商品详情">
-          <el-input v-model="addProductForm.productDetail"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-      <el-button @click="editDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="editProduct">确 定</el-button>
-      </span>
+    <el-dialog title="规格分类配置"
+               :visible.sync="productSpecificationConfig.dialogVisible"
+               width="50%"
+               @close="productSpecificationConfig.dialogVisible = false">
+      <product-specification-config :product-id="productSpecificationConfig.productId"></product-specification-config>
     </el-dialog>
   </div>
 </template>
@@ -159,10 +134,13 @@ import {
   brandList,
   categoryTree,
   productInfoCreate,
+  productInfoUpdate,
   productInfoDelete,
   productInfoList,
   productInfoStatusUpdate
 } from '@/api/product'
+
+import ProductSpecificationConfig from '@/components/product/ProductSpecificationConfig'
 
 export default {
   data() {
@@ -187,7 +165,6 @@ export default {
       totalNum: 0,
       totalPage: 0,
       addDialogVisible: false,
-      editDialogVisible: false,
       // 添加商品入参
       addProductForm: {
         keywords: '',
@@ -201,7 +178,8 @@ export default {
         productName: '',
         productSn: '',
         stock: 0,
-        subTitle: ''
+        subTitle: '',
+        pictures: []
       },
       deleteProductForm: {
         productId: ''
@@ -212,6 +190,11 @@ export default {
           { required: true, message: '请输入商品名称', trigger: 'blur' },
           { min: 1, max: 20, message: '长度在1到20个字符', trigger: 'blur' }
         ]
+      },
+      // 规格配置对话框
+      productSpecificationConfig: {
+        productId: '',
+        dialogVisible: false
       }
     }
   },
@@ -246,8 +229,14 @@ export default {
       this.getProductList()
     },
     // 显示添加商品修改模态框
-    showEditDialog(productId) {
-      this.editDialogVisible = true
+    showEditDialog(row) {
+      this.addDialogVisible = true
+      this.addProductForm = row
+      this.selectCategoryIds[0] = row.productCategoryId
+    },
+    // 显示添加商品添加模态框
+    showAddDialog() {
+      this.addDialogVisible = true
     },
     // 删除商品
     async deleteProduct(productId) {
@@ -264,13 +253,15 @@ export default {
     // 添加商品
     async addProduct() {
       this.addProductForm.productCategoryId = this.selectCategoryIds[0]
-      await productInfoCreate(this.addProductForm)
+      this.addProductForm.pictures = []
+      if (this.addProductForm.productId === '') {
+        await productInfoCreate(this.addProductForm)
+      } else {
+        await productInfoUpdate(this.addProductForm)
+        this.addProductForm.productId = ''
+      }
       this.addDialogVisible = false
       await this.getProductList()
-    },
-    // 编辑商品
-    editProduct() {
-      this.editDialogVisible = false
     },
     // 添加商品对话框关闭
     addDialogVisibleClose() {
@@ -284,18 +275,26 @@ export default {
     // 选中商品分类
     closeSelectCategory() {
       this.$refs.selectCategoryIdRef.dropDownVisible = false
+    },
+    // 展示规格配置
+    showProductSpecificationConfig(productId) {
+      this.productSpecificationConfig.productId = productId
+      this.productSpecificationConfig.dialogVisible = true
     }
   },
   created() {
     this.getProductList()
     this.getBrandList()
     this.getCategoryList()
+  },
+  components: {
+    ProductSpecificationConfig
   }
 }
 
 </script>
 <style lang="less" scoped>
-.el-switch{
+.el-switch {
   margin-right: 10px;
 }
 </style>
