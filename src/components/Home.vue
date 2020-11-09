@@ -20,7 +20,7 @@
                  router
                  :default-active="activePath">
           <!-- 一级菜单-->
-          <el-submenu :index="item.id + ''" v-for="item in menulist" :key="item.id">
+          <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单模板区域-->
             <template slot="title">
               <!-- 图标-->
@@ -50,18 +50,13 @@ export default {
   data() {
     return {
       // 菜单数据
-      menulist: [{
+      menuList: [{
         id: 125,
         name: '用户管理',
         child: [{
           id: 1251,
           name: '用户列表',
           path: '/user/list'
-        },
-        {
-          id: 1252,
-          name: '用户信息',
-          path: '/user/info'
         }]
       },
 
@@ -84,7 +79,15 @@ export default {
           path: '/brand/list'
         }]
       },
-      { id: 102, name: '订单管理' },
+      {
+        id: 102,
+        name: '订单管理',
+        child: [{
+          id: 1021,
+          name: '订单列表',
+          path: '/order/list'
+        }]
+      },
       { id: 145, name: '报表管理' },
       { id: 103, name: '权限管理' }
       ],
@@ -113,7 +116,7 @@ export default {
     async getMenuList() {
       const { data: res } = await this.$http.get('menu')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-      this.menulist = res.data
+      this.menuList = res.data
     },
     toggleCollapse() {
       // 点击隐藏菜单

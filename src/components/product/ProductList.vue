@@ -252,6 +252,8 @@ export default {
       this.addDialogVisible = true
       this.addProductForm = row
       this.selectCategoryIds[0] = row.productCategoryId
+      console.log(row.productCategoryId)
+      console.log(this.selectCategoryIds)
     },
     // 显示添加商品添加模态框
     showAddDialog() {

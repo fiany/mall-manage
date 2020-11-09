@@ -7,6 +7,7 @@ import ProductList from '../components/product/ProductList.vue'
 import CategoryList from '../components/product/CategoryList.vue'
 import BrandList from '../components/product/BrandList.vue'
 import UserList from '../components/user/UserList.vue'
+import OrderList from '@/components/order/OrderList'
 
 Vue.use(VueRouter)
 
@@ -50,6 +51,11 @@ const routes = [
         path: '/user/list',
         name: 'UserList',
         component: UserList
+      },
+      {
+        path: '/order/list',
+        name: 'OrderList',
+        component: OrderList
       }
     ]
   }

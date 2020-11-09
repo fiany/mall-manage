@@ -6,7 +6,7 @@
       <el-table-column
         prop="categoryName"
         label="分类名称"
-        width="158">
+        width="155">
       </el-table-column>
       <el-table-column
         label="分类值"
@@ -17,7 +17,7 @@
       </el-table-column>
     </el-table>
     <el-row style="margin-top: 10px">
-      <el-col :span="4"><el-input class="input-new-tag" size="mini" v-model="specificationCategoryAddForm.categoryName"/></el-col>
+      <el-col :span="4"><el-input class="input-new-tag" size="small" v-model="specificationCategoryAddForm.categoryName"/></el-col>
       <el-col :span="18">
         <el-tag
           :key="tag"

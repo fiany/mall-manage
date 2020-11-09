@@ -10,7 +10,7 @@
       <el-table-column label="规格" width="600">
         <template slot-scope="scope">
           <el-tag v-for="(item,index) in scope.row.specificationValueList" :key="index">
-            {{ item.categoryName }}:{{ item.categoryValueName }}
+            {{ item.categoryName }} : {{ item.categoryValueName }}
           </el-tag>
         </template>
       </el-table-column>
