@@ -8,6 +8,8 @@ import CategoryList from '../components/product/CategoryList.vue'
 import BrandList from '../components/product/BrandList.vue'
 import UserList from '../components/user/UserList.vue'
 import OrderList from '@/components/order/OrderList'
+import PermissionManage from '@/components/permission/PermissionManage'
+import RoleManage from '@/components/permission/RoleManage'
 
 Vue.use(VueRouter)
 
@@ -56,6 +58,16 @@ const routes = [
         path: '/order/list',
         name: 'OrderList',
         component: OrderList
+      },
+      {
+        path: '/role/manage',
+        name: 'RoleManage',
+        component: RoleManage
+      },
+      {
+        path: '/permission/manage',
+        name: 'PermissionManage',
+        component: PermissionManage
       }
     ]
   }

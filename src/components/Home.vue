@@ -25,14 +25,14 @@
             <template slot="title">
               <!-- 图标-->
               <i :class="iconsObj[item.id]"></i>
-              <span>{{item.name}}</span>
+              <span>{{ item.name }}</span>
             </template>
             <!-- 二级菜单-->
             <el-menu-item :index="subItem.path" v-for="subItem in item.child" :key="subItem.id"
                           @click="saveNavState(subItem.path)">
               <!-- 图标-->
               <i class="el-icon-menu"></i>
-              <span>{{subItem.name}}</span>
+              <span>{{ subItem.name }}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -88,8 +88,23 @@ export default {
           path: '/order/list'
         }]
       },
-      { id: 145, name: '报表管理' },
-      { id: 103, name: '权限管理' }
+      {
+        id: 145, name: '报表管理'
+      },
+      {
+        id: 103,
+        name: '权限模块',
+        child: [{
+          id: 1032,
+          name: '角色管理',
+          path: '/role/manage'
+        },
+        {
+          id: 1033,
+          name: '权限管理',
+          path: '/permission/manage'
+        }]
+      }
       ],
       iconsObj: {
         125: 'iconfont icon-user',
@@ -131,53 +146,53 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-  .home-container {
-    width: 100%;
-    height: 100%;
-  }
+.home-container {
+  width: 100%;
+  height: 100%;
+}
 
-  .el-header {
-    background-color: #373d41;
+.el-header {
+  background-color: #373d41;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 0;
+  align-items: center;
+  color: #fff;
+  font-size: 20px;
+
+  > div {
     display: flex;
-    justify-content: space-between;
-    padding-left: 0;
     align-items: center;
-    color: #fff;
-    font-size: 20px;
 
-    > div {
-      display: flex;
-      align-items: center;
-
-      span {
-        margin-left: 15px;
-      }
+    span {
+      margin-left: 15px;
     }
   }
+}
 
-  .el-aside {
-    background-color: #333744;
+.el-aside {
+  background-color: #333744;
 
-    .el-menu {
-      border-right: none;
-    }
+  .el-menu {
+    border-right: none;
   }
+}
 
-  .el-main {
-    background-color: #eeeeee;
-  }
+.el-main {
+  background-color: #eeeeee;
+}
 
-  .iconfont {
-    margin-right: 10px;
-  }
+.iconfont {
+  margin-right: 10px;
+}
 
-  .toggle-button {
-    background-color: #4A5064;
-    font-size: 10px;
-    line-height: 24px;
-    color: #fffdef;
-    text-align: center;
-    letter-spacing: 0.2em;
-    cursor: pointer;
-  }
+.toggle-button {
+  background-color: #4A5064;
+  font-size: 10px;
+  line-height: 24px;
+  color: #fffdef;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
 </style>
